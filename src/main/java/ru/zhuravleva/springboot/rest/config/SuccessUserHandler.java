@@ -17,15 +17,13 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException {
-       httpServletResponse.sendRedirect("/");
 
-//        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-//        if (roles.contains("ADMIN")) {
-//            httpServletResponse.sendRedirect("/api/users");
-//        } else if (roles.contains("USER")) {
-//            httpServletResponse.sendRedirect("/");
-//        } else {
-//            httpServletResponse.sendRedirect("/login");
-//        }
+        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+        if (roles.contains("ADMIN") || roles.contains("USER")) {
+            httpServletResponse.sendRedirect("/");
+        } else {
+            httpServletResponse.sendRedirect("/login");
+        }
     }
 }

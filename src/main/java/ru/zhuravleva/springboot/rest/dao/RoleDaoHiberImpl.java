@@ -49,23 +49,6 @@ public class RoleDaoHiberImpl implements RoleDao {
     }
 
 
-//    public Role getRoleByName(String roleName) {
-//
-//        return (Role) em.createQuery("from Role r where r.role=:role")
-//                .setParameter("role", roleName)
-//                .getSingleResult();
-//    }
-
-//    @Override
-//    public Set<Role> getSetOfRoles(String[] rolesNames) {
-//        Set<Role> roleSet = new HashSet<>();
-//        for (String role : rolesNames) {
-//            roleSet.add(getRoleByName(role));
-//        }
-//        return (HashSet) roleSet;
-//    }
-
-
 
 
 }

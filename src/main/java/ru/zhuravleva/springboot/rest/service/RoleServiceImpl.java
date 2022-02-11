@@ -57,13 +57,5 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.getRoleByName(roleName);
     }
 
-//    public Set<Role> getSetOfRoles(String[] name) {
-//       return roleDao.getSetOfRoles(name);
-//    }
-
-//    @Override
-//    public String getCrypt(String password) {
-//        return bCryptPasswordEncoder.encode(password);
-//    }
 
 }

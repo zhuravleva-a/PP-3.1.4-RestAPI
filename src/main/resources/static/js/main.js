@@ -42,9 +42,23 @@ async function getTableWithAllUsers() {
     await userFetchService.getAllUsers()
         .then(res => res.json())
         .then(users => {
-            console.log(users)
+
             let tableData = ''
             users.forEach(user => {
+                console.log("ищем роли")
+
+
+                let roleNames = ''
+                if (user.roles.length > 1) {
+
+                    roleNames = user.roles;
+                } else {
+                    roleNames = user.roles.entries().next().value[1].name;
+                }
+                // console.log(user.roles)
+                //console.log(user.roles[0].value)
+                console.log(roleNames)
+                // console.log(user.roles[0][0])
                 tableData += `
                         <tr>
                             <td>${user.id}</td>
@@ -52,7 +66,7 @@ async function getTableWithAllUsers() {
                             <td>${user.lastName}</td>
                             <td>${user.age}</td>
                             <td>${user.username}</td>
-                            <td>${user.roles}</td>
+                            <td>${roleNames}</td>
                             <td>
                                 <button type="submit" data-bs-userid="${user.id}" data-bs-action="edit" class="btn btn-info"
                                 data-bs-toggle="modal" data-bs-target="#modalWindow" id="modalButton" name="modalButton"
@@ -109,9 +123,9 @@ console.log('зашли в getNewUserForm')
         .then(res => res.json())
         .then(roles => {
             console.log('роли ' + roles);
-            let rolesData = `<select class="form-control" name="roles" multiple size=${roles.size}>`;
+            let rolesData = `<select class="form-control" name="newFormRoles" id="newFormRoles" multiple size="2">`;
             roles.forEach(role => {
-                rolesData += `<option id="inputNewUserRoles">${role.name}</option>`
+                rolesData += `<option id="inputNewUserRoles" value="${role.id}">${role.name}</option>`
             })
             rolesData += `</select>`;
             document.getElementById('newUserRoles').innerHTML = rolesData;
@@ -126,19 +140,39 @@ document.getElementById('NewUserTab').addEventListener('click', async () => {
 //Добавление нового юзера
 
 const addNewUser = async () => {
+
+    let roles = [];
+    let rolesSelected = document.getElementById('newFormRoles').selectedOptions;
+    console.log(rolesSelected)
+    for (let i = 0; i < rolesSelected.length; i++) {
+        let role = {
+            id: document.getElementById('newFormRoles').selectedOptions[i].value,
+            name: document.getElementById('newFormRoles').selectedOptions[i].text
+        }
+        roles.push(role)
+
+    }
+
+    console.log(roles)
+
+
     let user = {
         name: document.getElementById('newUserInputName').value,
         lastName: document.getElementById('newUserInputLastName').value,
         age: document.getElementById('newUserInputAge').value,
         email: document.getElementById('newUserInputEmail').value,
         password: document.getElementById('newUserInputPassword').value,
+
         //roles: document.getElementById('inputNewUserRoles').selectedOptions
-        roles: [{id: 1, role: "ADMIN"}]
+        roles: roles
+            //[{id: 1, role: "ADMIN"}]
             //.map(role => role.value)
 
     };
 
-    console.log(user);
+    console.log(user)
+
+
 
     let response = await fetch('http://localhost:8080/api/users', {
         method: 'POST',
@@ -166,10 +200,10 @@ const addNewUser = async () => {
 
 
 
-addUserForm.addEventListener('submit', (e) => {
+addUserForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    addNewUser();
+    await addNewUser();
 });
 
 
@@ -205,15 +239,16 @@ async function editUser(modal, id) {
                            name="password" value="${user.password}" id="modalPassword"/>
 
                     <label class="form-label fw-bold">Roles</label>
-                    <div>
                         <select class="form-control" name="roles" multiple size="2" id="modalRoles">
-                            <div>
-                                <option/>
-                            </div>
-                        </select>
-                    </div>
-                    </form>
         `;
+            user.roles.forEach(role => {
+                bodyForm += `<option id="modalRolesOptions" value="${role.id}" selected>${role.name}</option>`
+
+            });
+
+            bodyForm += `</select>
+                    </form>`
+
             document.getElementById('modalFormBody').innerHTML = bodyForm;
             let buttons = `<button  class="btn btn-outline-success" id="editButton" data-bs-dismiss="modal">Edit</button>
              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`;
@@ -228,6 +263,22 @@ async function editUser(modal, id) {
          let email = document.getElementById('modalEmail').value.trim();
          let password = document.getElementById('modalPassword').value.trim();
          let age = document.getElementById('modalAge').value.trim();
+         // let rolesSelected = document.getElementById('modalRoles').selectedOptions;
+         // let roles = new Map();
+         // for (let i = 0; i < rolesSelected.length; i++) {
+         //     roles.set(document.getElementById('modalRoles').selectedOptions[i].value,
+         //         document.getElementById('modalRoles').selectedOptions[i].text);
+         //     console.log(roles)
+         // }
+
+
+
+         let roles = {
+             id: document.getElementById('modalRoles').selectedOptions[0].value,
+             name: document.getElementById('modalRoles').selectedOptions[0].text
+         }
+
+         console.log("проверить роли" + roles);
 
          let userUpdated = {
              id: id,
@@ -236,7 +287,12 @@ async function editUser(modal, id) {
              email: email,
              password: password,
              age: age,
+             roles: [roles]
          }
+
+
+         console.log(userUpdated)
+         console.log(userUpdated.roles)
 
          const response = await userFetchService.updateUser(userUpdated, id);
 
@@ -291,14 +347,20 @@ async function deleteUser(modal, id) {
 
                     <label class="form-label fw-bold">Roles</label>
                     <div>
-                        <select class="form-control" name="roles" multiple size="2" id="modalRoles">
-                            <div>
-                                <option/>
-                            </div>
-                        </select>
-                    </div>
-                    </form>
+                    <select className="form-control" name="roles" multiple size=${user.roles.length} id="modalRoles">
+                    <div>
         `;
+
+            user.roles.forEach(role => {
+                bodyForm += `<option>${role.name}</option>`
+                   
+            });
+
+            bodyForm += `</div>
+                </select>
+                </div>
+                </form>`;
+
             document.getElementById('modalFormBody').innerHTML = bodyForm;
             let buttons = `<button  class="btn btn-danger" id="deleteButton" data-bs-dismiss="modal">Delete</button>
              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`;

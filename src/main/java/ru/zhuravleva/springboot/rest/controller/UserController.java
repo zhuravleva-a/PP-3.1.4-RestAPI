@@ -18,16 +18,11 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @GetMapping("/user")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-//    public String showCurrentUser(ModelMap model, Authentication authentication) {
-//        model.addAttribute("currentUser", authentication.getPrincipal());
-//        return "user";
-//    }
 
     @GetMapping()
     public String getCurrentUser(Authentication authentication, ModelMap model) {
         model.addAttribute("currentUser", authentication.getPrincipal());
+        model.addAttribute("currentUserRoles", authentication.getAuthorities());
         return "index";
     }
 

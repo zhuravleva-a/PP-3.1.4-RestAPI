@@ -44,9 +44,6 @@ public class UserDaoHiberImpl implements UserDao {
 
     @Override
     public User getUserByUsername(String username) {
-        System.out.println((User) em.createQuery("from User user where user.email = ?1")
-                .setParameter(1, username)
-                .getSingleResult()  );
 
         return (User) em.createQuery("from User user where user.email = ?1")
                 .setParameter(1, username)

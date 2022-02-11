@@ -16,9 +16,8 @@ import java.util.Set;
 @Table(name = "roles")
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
+        property = "name"
 )
-
 public class Role implements GrantedAuthority {
 
     @Id
@@ -29,7 +28,6 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-
     private List<User> users;
 
     public Role() {
@@ -39,22 +37,6 @@ public class Role implements GrantedAuthority {
     public Role(String name) {
         this.name = name;
     }
-
-    public void addUserToRoles(User user) {
-        if (users == null) {
-            users = new ArrayList<>();
-        }
-        users.add(user);
-    }
-
-    public Set<Role> getSetOfRoles(String[] roleNames) {
-        Set<Role> roles = new HashSet<>();
-        for (String role: roleNames) {
-            roles.add(new Role(role));
-        }
-        return roles;
-    }
-
 
     public int getId() {
         return id;

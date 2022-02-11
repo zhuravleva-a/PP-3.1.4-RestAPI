@@ -13,7 +13,6 @@ import java.util.List;
 
 @Service
 @Transactional
-@Qualifier("userDetailsService")
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;

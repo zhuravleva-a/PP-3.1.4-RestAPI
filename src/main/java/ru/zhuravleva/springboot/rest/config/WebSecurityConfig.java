@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.zhuravleva.springboot.rest.service.UserService;
 
 @Configuration
@@ -30,41 +28,20 @@ public class    WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.successUserHandler = successUserHandler;
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/").authenticated()
-//                //.antMatchers("/").hasAnyAuthority("USER", "ADMIN")
-//                //.antMatchers("/api/users**").hasAuthority("ADMIN")
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin().successHandler(successUserHandler)
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        http.formLogin()
-                .successHandler(successUserHandler)
-                .permitAll();
-        http.logout()
+        http
+                .authorizeRequests()
+                .antMatchers("/").authenticated()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().successHandler(successUserHandler)
                 .permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
+                .and()
+                .logout()
+                .permitAll()
                 .and().csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/").authenticated();
     }
-
-//    @Autowired
-//    public void configGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-//    }
 
 
     @Bean
@@ -77,7 +54,8 @@ public class    WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userService.getUserByUsername(username);
+        return username ->
+                userService.getUserByUsername(username);
     }
 
     @Bean

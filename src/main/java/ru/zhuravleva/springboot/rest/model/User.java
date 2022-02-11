@@ -18,7 +18,6 @@ import java.util.Set;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id"
 )
-
 public class User implements UserDetails {
 
     @Id
@@ -26,19 +25,15 @@ public class User implements UserDetails {
     private long id;
 
     @Column(name = "name")
-    //@NotEmpty(message = "Обязательное поле")
     private String name;
 
     @Column(name = "lastName")
     private String lastName;
 
     @Column(name = "age")
-    //@Min(value = 1, message = "Некорректное значение")
     private int age;
 
     @Column(name = "email")
-    //@Email(message = "Некорректное значение")
-    //@NotEmpty
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -46,8 +41,6 @@ public class User implements UserDetails {
             , joinColumns = @JoinColumn(name = "users_id")
             , inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-
-   // @JsonIgnore
     private Set<Role> roles;
 
     @Column(name = "password")
