@@ -14,10 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "name"
-)
+
 public class Role implements GrantedAuthority {
 
     @Id
@@ -28,6 +25,10 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id"
+//    )
     private List<User> users;
 
     public Role() {

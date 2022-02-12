@@ -8,16 +8,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
-)
+
 public class User implements UserDetails {
 
     @Id
@@ -41,7 +36,11 @@ public class User implements UserDetails {
             , joinColumns = @JoinColumn(name = "users_id")
             , inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-    private Set<Role> roles;
+//    @JsonIdentityInfo(
+//            generator = ObjectIdGenerators.PropertyGenerator.class,
+//            property = "id"
+//    )
+    private List<Role> roles;
 
     @Column(name = "password")
     private String password = "$2a$12$nwHY4Z2PtZ6KkA0PbPPIyewOc7qWiAub2bJA4aItSJFHwtlO0qS9S"; //pass
@@ -59,7 +58,7 @@ public class User implements UserDetails {
 
     public void addRoleToUser(Role role) {
         if (roles == null) {
-            roles = new HashSet<>();
+            roles = new LinkedList<>();
         }
         roles.add(role);
     }
@@ -106,13 +105,13 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
 
         System.out.println(roles);
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 

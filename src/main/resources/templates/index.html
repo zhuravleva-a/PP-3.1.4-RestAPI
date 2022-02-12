@@ -99,6 +99,23 @@
                                             </tr>
                                             </thead>
                                             <tbody id="allUsersTableBody">
+                                            <tr>
+                                                <td id="allUsersId"></td>
+                                                <td id="allUsersName"></td>
+                                                <td id="allUsersLastName"></td>
+                                                <td id="allUsersAge"></td>
+                                                <td id="allUsersEmail"></td>
+                                                <td id="allUsersRoles"></td>
+                                                <td>
+                                                    <button type="submit" data-bs-userid="${user.id}" data-bs-action="edit" class="btn btn-info"
+                                                            data-bs-toggle="modal" data-bs-target="#modalWindow" id="modalButton" name="modalButton"
+                                                            value="edit" data-bs-whatever="${user.id}">Edit</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" data-bs-userid="${user.id}" data-bs-action="delete" class="btn btn-danger"
+                                                            data-bs-toggle="modal" data-bs-target="#modalWindow" id="modalButton" name="modalButton" value="delete">Delete</button>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -139,9 +156,9 @@
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label fw-bold">Roles</label>
-                                                <div class="form-control" id="newUserRoles">
+                                                <select class="form-control" id="newUserRoles" multiple size="2">
 
-                                                </div>
+                                                </select>
                                             </div>
                                             <button type="submit" id="addNewUser" class="btn btn-success">Add new user</button>
                                         </form>
@@ -233,7 +250,7 @@
 </div>
 
 
-<!-- Модальное окно Edit -->
+<!-- Модальное окно-->
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="modalWindow"
      data-action="" data-userid="" data-bs-backdrop="static">
@@ -246,7 +263,33 @@
                 </button>
             </div>
             <div class="modal-body mr-6 ml-6 text-center" id="modalFormBody">
+                <form>
+                    <label class="form-label fw-bold">ID</label>
+                    <input type="number" class="form-control form-control-sm-6 disabled" name="name"
+                           style="background-color: lightgray" id="modalId"/>
+                    <label class="form-label fw-bold">First name</label>
+                    <input type="text" class="form-control form-control-sm-6" name="name"
+                           style="background-color: lightgray" id="modalName"/>
+                    <label class="form-label fw-bold">Last name</label>
+                    <input type="text" class="form-control form-control-sm-6" name="lastName"
+                           id="modalLastName"/>
 
+                    <label class="form-label fw-bold">Age</label>
+                    <input type="number" class="form-control form-control-sm-6" name="age"
+                           id="modalAge"/>
+
+                    <label class="form-label fw-bold">E-mail</label>
+                    <input type="email" class="form-control form-control-sm-6" name="email"
+                           id="modalEmail"/>
+
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" class="form-control form-control-sm-6"
+                           name="password" id="modalPassword"/>
+
+                    <label class="form-label fw-bold">Roles</label>
+                    <select class="form-control" name="roles" multiple size="2" id="modalRoles">
+                    </select>
+                </form>
 
             </div>
             <div class="modal-footer">
