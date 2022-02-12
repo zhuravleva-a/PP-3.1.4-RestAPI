@@ -1,6 +1,7 @@
 package ru.zhuravleva.springboot.rest.service;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.zhuravleva.springboot.rest.dao.RoleDao;
@@ -14,15 +15,17 @@ import java.util.Set;
 public class RoleServiceImpl implements RoleService {
 
     private RoleDao roleDao;
-//    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-//
-//    public RoleServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, RoleDao roleDao) {
-//        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-//        this.roleDao = roleDao;
-//    }
+    private final BCryptPasswordEncoder bCrypt;
 
-    public RoleServiceImpl(RoleDao roleDao) {
+    public RoleServiceImpl(RoleDao roleDao, BCryptPasswordEncoder bCrypt) {
+
         this.roleDao = roleDao;
+        this.bCrypt = bCrypt;
+    }
+
+    @Override
+    public String getCrypt(String password) {
+        return bCrypt.encode(password);
     }
 
     @Override

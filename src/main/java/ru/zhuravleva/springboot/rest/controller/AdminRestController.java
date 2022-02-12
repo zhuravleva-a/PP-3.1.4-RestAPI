@@ -12,7 +12,6 @@ import ru.zhuravleva.springboot.rest.model.User;
 import ru.zhuravleva.springboot.rest.service.RoleService;
 import ru.zhuravleva.springboot.rest.service.UserService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,17 +30,10 @@ public class AdminRestController {
         this.roleService = roleService;
     }
 
-
     @GetMapping("/users")
     public ResponseEntity<List<User>> showAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
-    @GetMapping("/roles")
-    public ResponseEntity<Set<Role>> showAllRoles() {
-       Set<Role> roles = roleService.getAllRoles();
-        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
@@ -54,25 +46,10 @@ public class AdminRestController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/roles/{id}")
-    public ResponseEntity<Role> showRoleById(@PathVariable("id") int id) {
-
-        return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
-    }
-
-
     @PostMapping("/users")
     public ResponseEntity<List<User>> createUser(@RequestBody User user) {
 
-//        Set<Role> roles = new HashSet<>();
-//
-//        for (Role role: user.getRoles()) {
-//            roles.add(roleService.getRoleByName(role.getName()));
-//        }
-//        user.setRoles(roles);
         userService.save(user);
-        System.out.println("adding new user" + user);
-        System.out.println(userService.getAllUsers());
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
@@ -83,7 +60,6 @@ public class AdminRestController {
         userService.update(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity deleteUser(@PathVariable("id") int id) {
@@ -96,7 +72,17 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/roles")
+    public ResponseEntity<Set<Role>> showAllRoles() {
+        Set<Role> roles = roleService.getAllRoles();
+        return new ResponseEntity<>(roles, HttpStatus.OK);
+    }
 
+    @GetMapping("/roles/{id}")
+    public ResponseEntity<Role> showRoleById(@PathVariable("id") int id) {
+
+        return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
+    }
 
 }
 

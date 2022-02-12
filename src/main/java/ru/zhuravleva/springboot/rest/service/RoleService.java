@@ -12,5 +12,6 @@ public interface RoleService {
     void update(int id, Role updatedRole);
     void delete(int id);
     Role getRoleByName(String roleName);
+    String getCrypt(String password);
 
 }

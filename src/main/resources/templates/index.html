@@ -76,7 +76,7 @@
 
                     <div sec:authorize="hasAuthority('ADMIN')" class="tab-content">
 
-                        <!-- Users Table -->
+                        <!-- Users Table tab-pane -->
                         <div class="tab-pane fade show active" id="UsersTable">
                             <div class="card">
                                 <div class="card-header">
@@ -118,25 +118,25 @@
                                                 <label for="newUserInputName" class="form-label fw-bold">First
                                                     name</label>
                                                 <input type="text" class="form-control form-control-sm-5"
-                                                       id="newUserInputName">
+                                                       id="newUserInputName" placeholder="First name">
                                             </div>
                                             <div class="mb-2">
                                                 <label for="newUserInputLastName" class="form-label fw-bold">Last
                                                     name</label>
-                                                <input type="text" class="form-control" id="newUserInputLastName">
+                                                <input type="text" class="form-control" id="newUserInputLastName" placeholder="Last name">
                                             </div>
                                             <div class="mb-2">
                                                 <label for="newUserInputAge" class="form-label fw-bold">Age</label>
-                                                <input type="number" class="form-control" id="newUserInputAge">
+                                                <input type="number" class="form-control" id="newUserInputAge" placeholder="Age">
                                             </div>
                                             <div class="mb-2">
                                                 <label for="newUserInputEmail" class="form-label fw-bold">E-mail</label>
-                                                <input type="email" class="form-control" id="newUserInputEmail">
+                                                <input type="email" class="form-control" id="newUserInputEmail" placeholder="E-mail">
                                             </div>
                                             <div class="mb-2">
                                                 <label for="newUserInputPassword"
                                                        class="form-label fw-bold">Password</label>
-                                                <input type="password" class="form-control" id="newUserInputPassword">
+                                                <input type="password" class="form-control" id="newUserInputPassword" placeholder="Password">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label fw-bold">Roles</label>
@@ -160,8 +160,8 @@
 
                 <div sec:authorize="hasAuthority('ADMIN')" class="tab-pane fade" id="UserPage">
                     <div class="card">
-                        <h2 class="h2">User information-page</h2>
-                        <h3 class="card-header">About user</h3>
+                        <h3 class="h3">User information-page</h3>
+                        <h5 class="card-header">About user</h5>
                         <div class="card-body text-center">
                             <table class="table table-striped">
                                 <thead>
@@ -193,8 +193,8 @@
 
                 <div sec:authorize="hasAuthority('USER')" class="tab-pane fade show active" id="UserPage">
                     <div class="card">
-                        <h2 class="h2">User information-page</h2>
-                        <h3 class="card-header">About user</h3>
+                        <h3 class="h3">User information-page</h3>
+                        <h5 class="card-header">About user</h5>
                         <div class="card-body text-center">
                             <table class="table table-striped">
                                 <thead>
@@ -242,11 +242,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalLabel"></h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="modalDismissButton">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body mx-auto col-md-6 text-center" id="modalFormBody">
+            <div class="modal-body mx-auto col-md-8 text-center" id="modalFormBody">
                 <form>
                     <label class="form-label fw-bold">ID</label>
                     <input type="number" class="form-control form-control-sm-6" disabled="true" name="name"

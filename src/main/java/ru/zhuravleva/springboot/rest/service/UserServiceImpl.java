@@ -16,10 +16,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
+    private RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, RoleService roleService) {
+
         this.userDao = userDao;
+        this.roleService = roleService;
     }
 
     @Override
@@ -34,11 +37,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
+        user.setPassword(roleService.getCrypt(user.getPassword()));
         userDao.save(user);
     }
 
     @Override
     public void update(long id, User updatedUser) {
+        updatedUser.setPassword(roleService.getCrypt(updatedUser.getPassword()));
         userDao.update(id, updatedUser);
     }
 

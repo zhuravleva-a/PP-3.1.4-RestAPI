@@ -35,7 +35,9 @@ public class DBInit {
         User user2 = new User("user", "user", 28, "user@email.com");
         User user3 = new User("admin&user", "admin&user", 37, "admin_user@email.com");
 
-        // password = pass
+        user1.setPassword("pass");
+        user2.setPassword("pass");
+        user3.setPassword("pass");
 
         user1.getRoles().add(role1);
         user2.getRoles().add(role2);

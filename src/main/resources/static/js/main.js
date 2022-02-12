@@ -1,7 +1,7 @@
 // DOM elements
 let modal = document.getElementById('modalWindow');
 let allUsersTable = document.getElementById('allUsersTable');
-let newUsersTab = document.getElementById('NewUserTab');
+//let newUsersTab = document.getElementById('NewUserTab');
 let saveNewUserForm = document.querySelector('.form');
 
 let modalId = document.getElementById('modalId');
@@ -13,13 +13,12 @@ let modalPassword = document.getElementById('modalPassword');
 let modalRoles = document.getElementById('modalRoles');
 
 
-
 // FETCH API методы
 const fetchService = {
     head: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Referer': null
+        'Content-Type': 'application/json'
+        //'Referer': null
     },
     getAllUsers: async () => await fetch('http://localhost:8080/api/users'),
     getUserById: async (id) => await fetch(`http://localhost:8080/api/users/${id}`),
@@ -33,7 +32,10 @@ const fetchService = {
         headers: fetchService.head,
         body: JSON.stringify(user)
     }),
-    deleteUser: async (id) => await fetch(`http://localhost:8080/api/users/${id}`, {method: 'DELETE', headers: fetchService.head}),
+    deleteUser: async (id) => await fetch(`http://localhost:8080/api/users/${id}`, {
+        method: 'DELETE',
+        headers: fetchService.head
+    }),
 
     getAllRoles: async () => await fetch('http://localhost:8080/api/roles'),
 
@@ -44,14 +46,12 @@ const fetchService = {
 // App init
 async function appInit() {
     await getTableWithAllUsers();
+    await getRolesForForm('modalForm');
+    await getRolesForForm('newUserForm');
 }
+
 appInit();
 
-
-//Переключение между вкладками
-newUsersTab.addEventListener('click', async () => {
-    await getRolesForForm('newUserForm');
-})
 
 //загрузка таблицы с пользователями
 
@@ -71,13 +71,13 @@ async function getTableWithAllUsers() {
                 })
 
                 // Заполнение таблицы с юзерами
-                let objectForRow = [user.id,user.name, user.lastName, user.age, user.email, roleNames];
+                let objectForRow = [user.id, user.name, user.lastName, user.age, user.email, roleNames];
 
                 let row = document.getElementById('allUsersTableBody').insertRow();
 
                 for (let i = 0; i < 8; i++) {
                     let cell = document.createElement('td');
-                    let cellData ='';
+                    let cellData = '';
                     if (i === 6) {
                         cellData = document.createElement('btn');
                         cellData.setAttribute('data-bs-userid', user.id);
@@ -104,44 +104,68 @@ async function getTableWithAllUsers() {
                     row.appendChild(cell);
                 }
 
-        })
-
-
-    let openModalButtons = allUsersTable.querySelectorAll('.btn');
-    for (let button of openModalButtons) {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            let targetButton = e.target;
-
-            let buttonUserAction = targetButton.getAttribute("data-bs-action");
-            let buttonUserId = targetButton.getAttribute("data-bs-userid");
-
-            modal.setAttribute('data-bs-userid', buttonUserId);
-            modal.setAttribute('data-bs-action', buttonUserAction);
-            modal.classList.add('show');
-
-            if (modal.classList.contains('show')) {
-                let userid = modal.getAttribute('data-bs-userid');
-                let action = modal.getAttribute('data-bs-action');
-
-                switch (action) {
-                    case 'edit':
-                        document.getElementById('modalLabel').textContent = 'Edit user';
-                        editUser(modal, userid);
-                        break;
-                    case 'delete':
-                        document.getElementById('modalLabel').textContent = 'Delete user';
-                        deleteUser(modal, userid);
-                        break;
-                }
-            }
-
             })
 
+
+            let openModalButtons = allUsersTable.querySelectorAll('.btn');
+            for (let button of openModalButtons) {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    let targetButton = e.target;
+
+                    let buttonUserAction = targetButton.getAttribute("data-bs-action");
+                    let buttonUserId = targetButton.getAttribute("data-bs-userid");
+
+                    modal.setAttribute('data-bs-userid', buttonUserId);
+                    modal.setAttribute('data-bs-action', buttonUserAction);
+                    modal.classList.add('show');
+
+                    if (modal.classList.contains('show')) {
+                        let userid = modal.getAttribute('data-bs-userid');
+                        let action = modal.getAttribute('data-bs-action');
+
+                        switch (action) {
+                            case 'edit':
+                                document.getElementById('modalLabel').textContent = 'Edit user';
+                                editUser(modal, userid);
+                                break;
+                            case 'delete':
+                                document.getElementById('modalLabel').textContent = 'Delete user';
+                                deleteUser(modal, userid);
+                                break;
+                        }
+                    }
+
+                })
+
+            }
+        })
+}
+
+document.getElementById('modalCloseButton').addEventListener('click', async () => {
+    let editButton =  document.getElementById('editButton');
+    let deleteButton = document.getElementById('deleteButton');
+    if (editButton != null) {
+        editButton.remove();
+    }
+    if (deleteButton != null) {
+        deleteButton.remove();
+    }
+
+
+})
+
+document.getElementById('modalDismissButton').addEventListener('click', async () => {
+    let editButton =  document.getElementById('editButton');
+    let deleteButton = document.getElementById('deleteButton');
+    if (editButton != null) {
+        editButton.remove();
+    }
+    if (deleteButton != null) {
+        deleteButton.remove();
     }
 })
-}
 
 //Получение пустой формы для создания юзера (с ролями)
 async function getRolesForForm(formType) {
@@ -207,13 +231,13 @@ async function fillModalForm(user, action) {
     modalEmail.setAttribute('value', user.email);
     modalPassword.setAttribute('value', user.password);
 
-    await getRolesForForm('modalForm');
 }
 
+//Сохранение ролей из select формы в массив
 async function parsedRolesFromInput(rolesInputName) {
     let roles = [];
     let rolesSelected = document.getElementById(rolesInputName).selectedOptions;
-    console.log(rolesSelected)
+
     for (let i = 0; i < rolesSelected.length; i++) {
         let role = {
             id: document.getElementById(rolesInputName).selectedOptions[i].value,
@@ -224,11 +248,17 @@ async function parsedRolesFromInput(rolesInputName) {
     }
     return roles;
 }
-//Добавление нового юзера
 
+//Добавление нового юзера
 async function addNewUser() {
 
     let roles = await parsedRolesFromInput('newUserRoles');
+
+    if (roles.length === 0) {
+        let userRole = await fetchService.getRoleById(2)
+            .then(res => res.json());
+        roles.push(userRole);
+    }
 
     let user = {
         name: document.getElementById('newUserInputName').value,
@@ -260,52 +290,50 @@ saveNewUserForm.addEventListener('submit', async (e) => {
     await addNewUser();
 });
 
-
 //Изменение юзера
 async function editUser(modal, id) {
 
-    let editButton = '';
-
+let currentUserRoles = '';
     await fetchService.getUserById(id)
         .then(res => res.json())
         .then(user => {
             fillModalForm(user, 'edit');
+            currentUserRoles = user.roles;
         })
 
-     document.getElementById('editButton').addEventListener('click', async (e) => {
-         e.preventDefault();
-         let id = document.getElementById('modalId').value.trim();
-         let name = document.getElementById('modalName').value.trim();
-         let lastName = document.getElementById('modalLastName').value.trim();
-         let email = document.getElementById('modalEmail').value.trim();
-         let password = document.getElementById('modalPassword').value.trim();
-         let age = document.getElementById('modalAge').value.trim();
+    document.getElementById('editButton').addEventListener('click', async (e) => {
+        e.preventDefault();
 
-         let roles = await parsedRolesFromInput('modalRoles');
+        let roles = await parsedRolesFromInput('modalRoles');
+        if(roles.length === 0) {
+            roles = currentUserRoles;
+        }
 
-         let userUpdated = {
-             id: id,
-             name: name,
-             lastName: lastName,
-             email: email,
-             password: password,
-             age: age,
-             roles: roles
-         }
+        let userUpdated = {
+            id: modalId.value.trim(),
+            name: modalName.value.trim(),
+            lastName: modalLastName.value.trim(),
+            email: modalEmail.value.trim(),
+            password: modalPassword.value.trim(),
+            age: modalAge.value.trim(),
+            roles: roles
+        }
 
-         const response = await fetchService.updateUser(userUpdated, id);
+        const response = await fetchService.updateUser(userUpdated, id);
 
-         if (response.ok) {
-                     await getTableWithAllUsers();
-                     modal.classList.remove('show');
-                     document.getElementById('editButton').remove();
+        if (response.ok) {
+            await getTableWithAllUsers();
+            modal.classList.remove('show');
+            document.getElementById('editButton').remove();
 
-                 } else {
-             console.log('error in edit method')
+        } else {
+            console.log('error in edit method');
+            modal.classList.remove('show');
+            document.getElementById('editButton').remove();
+            alert('something went wrong');
 
-                 }
-     })
-
+        }
+    })
 
 
 }
@@ -320,9 +348,9 @@ async function deleteUser(modal, id) {
         })
 
 
-    document.getElementById('deleteButton').addEventListener('click', async(e) => {
+    document.getElementById('deleteButton').addEventListener('click', async (e) => {
         e.preventDefault();
-        console.log(e.target)
+
         const response = await fetchService.deleteUser(id);
         if (response.ok) {
             await getTableWithAllUsers();
@@ -333,8 +361,6 @@ async function deleteUser(modal, id) {
             console.log(response);
         }
     })
-
-
 
 
 }

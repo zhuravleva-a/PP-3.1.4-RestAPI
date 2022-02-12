@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "password")
-    private String password = "$2a$12$nwHY4Z2PtZ6KkA0PbPPIyewOc7qWiAub2bJA4aItSJFHwtlO0qS9S"; //pass
+    private String password;
 
     public User() {
 
@@ -88,6 +88,10 @@ public class User implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Set<Role> getRoles() {
