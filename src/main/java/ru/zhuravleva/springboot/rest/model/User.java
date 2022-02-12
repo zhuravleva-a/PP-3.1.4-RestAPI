@@ -1,9 +1,5 @@
 package ru.zhuravleva.springboot.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,11 +32,8 @@ public class User implements UserDetails {
             , joinColumns = @JoinColumn(name = "users_id")
             , inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
-//    @JsonIdentityInfo(
-//            generator = ObjectIdGenerators.PropertyGenerator.class,
-//            property = "id"
-//    )
-    private List<Role> roles;
+
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "password")
     private String password = "$2a$12$nwHY4Z2PtZ6KkA0PbPPIyewOc7qWiAub2bJA4aItSJFHwtlO0qS9S"; //pass
@@ -55,14 +48,6 @@ public class User implements UserDetails {
         this.age = age;
         this.email = email;
     }
-
-    public void addRoleToUser(Role role) {
-        if (roles == null) {
-            roles = new LinkedList<>();
-        }
-        roles.add(role);
-    }
-
 
 
     public long getId() {
@@ -105,13 +90,13 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
 
         System.out.println(roles);
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

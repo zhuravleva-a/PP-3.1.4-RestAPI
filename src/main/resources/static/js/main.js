@@ -10,6 +10,9 @@ let modalLastName = document.getElementById('modalLastName');
 let modalAge = document.getElementById('modalAge');
 let modalEmail = document.getElementById('modalEmail');
 let modalPassword = document.getElementById('modalPassword');
+let modalRoles = document.getElementById('modalRoles');
+
+
 
 // FETCH API методы
 const fetchService = {
@@ -50,16 +53,14 @@ newUsersTab.addEventListener('click', async () => {
     await getRolesForForm('newUserForm');
 })
 
-
-
-
+//загрузка таблицы с пользователями
 
 async function getTableWithAllUsers() {
 
     await fetchService.getAllUsers()
         .then(res => res.json())
         .then(users => {
-            let tableData = ''
+            document.getElementById('allUsersTableBody').innerHTML = '';
 
             users.forEach(user => {
 
@@ -69,28 +70,40 @@ async function getTableWithAllUsers() {
                     roleNames += role.name + ' ';
                 })
 
+                // Заполнение таблицы с юзерами
+                let objectForRow = [user.id,user.name, user.lastName, user.age, user.email, roleNames];
 
-                tableData += `
-                        <tr>
-                            <td>${user.id}</td>
-                            <td>${user.name}</td>
-                            <td>${user.lastName}</td>
-                            <td>${user.age}</td>
-                            <td>${user.username}</td>
-                            <td>${roleNames}</td>
-                            <td>
-                                <button type="submit" data-bs-userid="${user.id}" data-bs-action="edit" class="btn btn-info"
-                                data-bs-toggle="modal" data-bs-target="#modalWindow" id="modalButton" name="modalButton"
-                                value="edit" data-bs-whatever="${user.id}">Edit</button>
-                              </td>
-                            <td>
-                                <button type="button" data-bs-userid="${user.id}" data-bs-action="delete" class="btn btn-danger"
-                                data-bs-toggle="modal" data-bs-target="#modalWindow" id="modalButton" name="modalButton" value="delete">Delete</button>
-                            </td>
-                        </tr>
-                `;
-            });
-            document.getElementById('allUsersTableBody').innerHTML = tableData;
+                let row = document.getElementById('allUsersTableBody').insertRow();
+
+                for (let i = 0; i < 8; i++) {
+                    let cell = document.createElement('td');
+                    let cellData ='';
+                    if (i === 6) {
+                        cellData = document.createElement('btn');
+                        cellData.setAttribute('data-bs-userid', user.id);
+                        cellData.setAttribute('data-bs-action', 'edit');
+                        cellData.setAttribute('class', 'btn btn-info');
+                        cellData.setAttribute('data-bs-target', '#modalWindow');
+                        cellData.setAttribute('id', 'modalButton');
+                        cellData.setAttribute('data-bs-toggle', 'modal');
+                        cellData.textContent = 'Edit';
+                    } else if (i === 7) {
+                        cellData = document.createElement('btn');
+                        cellData.setAttribute('data-bs-userid', user.id);
+                        cellData.setAttribute('data-bs-action', 'delete');
+                        cellData.setAttribute('class', 'btn btn-danger');
+                        cellData.setAttribute('data-bs-target', '#modalWindow');
+                        cellData.setAttribute('id', 'modalButton');
+                        cellData.setAttribute('data-bs-toggle', 'modal');
+                        cellData.textContent = 'Delete';
+                    } else {
+                        cellData = document.createTextNode(objectForRow[i])
+                    }
+
+                    cell.appendChild(cellData);
+                    row.appendChild(cell);
+                }
+
         })
 
 
@@ -106,7 +119,6 @@ async function getTableWithAllUsers() {
 
             modal.setAttribute('data-bs-userid', buttonUserId);
             modal.setAttribute('data-bs-action', buttonUserAction);
-
             modal.classList.add('show');
 
             if (modal.classList.contains('show')) {
@@ -115,9 +127,11 @@ async function getTableWithAllUsers() {
 
                 switch (action) {
                     case 'edit':
+                        document.getElementById('modalLabel').textContent = 'Edit user';
                         editUser(modal, userid);
                         break;
                     case 'delete':
+                        document.getElementById('modalLabel').textContent = 'Delete user';
                         deleteUser(modal, userid);
                         break;
                 }
@@ -126,6 +140,7 @@ async function getTableWithAllUsers() {
             })
 
     }
+})
 }
 
 //Получение пустой формы для создания юзера (с ролями)
@@ -136,11 +151,10 @@ async function getRolesForForm(formType) {
         .then(roles => {
             let rolesData = ``;
             roles.forEach(role => {
-                rolesData += `<option value="${role.id}">${role.name}</option>`
+                rolesData += `<option value="${role.id}" id="modalRolesInput">${role.name}</option>`
             })
             switch (formType) {
                 case 'modalForm':
-                    console.log('modal form get roles')
                     document.getElementById('modalRoles').innerHTML = rolesData;
                     break;
                 case 'newUserForm':
@@ -151,21 +165,70 @@ async function getRolesForForm(formType) {
         })
 }
 
-//Добавление нового юзера
+//Заполнение модального окна данными пользователя
+async function fillModalForm(user, action) {
+    switch (action) {
+        case ('delete'):
+            modalName.disabled = true;
+            modalLastName.disabled = true;
+            modalAge.disabled = true;
+            modalEmail.disabled = true;
+            modalPassword.disabled = true;
+            modalRoles.disabled = true;
+            let deleteButton = document.createElement('btn');
+            deleteButton.setAttribute('class', 'btn btn-danger');
+            deleteButton.setAttribute('id', 'deleteButton');
+            deleteButton.setAttribute('data-bs-dismiss', 'modal');
+            deleteButton.textContent = 'Delete';
+            document.getElementById('modalFooter')
+                .insertBefore(deleteButton, document.getElementById('modalCloseButton'));
+            break;
+        case ('edit'):
+            modalName.disabled = false;
+            modalLastName.disabled = false;
+            modalAge.disabled = false;
+            modalEmail.disabled = false;
+            modalPassword.disabled = false;
+            modalRoles.disabled = false;
+            let editButton = document.createElement('btn');
+            editButton.setAttribute('class', 'btn btn-success');
+            editButton.setAttribute('id', 'editButton');
+            editButton.setAttribute('data-bs-dismiss', 'modal');
+            editButton.textContent = 'Edit';
+            document.getElementById('modalFooter')
+                .insertBefore(editButton, document.getElementById('modalCloseButton'));
+            break;
+    }
 
-async function addNewUser() {
+    modalId.setAttribute('value', user.id);
+    modalName.setAttribute('value', user.name);
+    modalLastName.setAttribute('value', user.lastName);
+    modalAge.setAttribute('value', user.age);
+    modalEmail.setAttribute('value', user.email);
+    modalPassword.setAttribute('value', user.password);
 
+    await getRolesForForm('modalForm');
+}
+
+async function parsedRolesFromInput(rolesInputName) {
     let roles = [];
-    let rolesSelected = document.getElementById('newUserRoles').selectedOptions;
+    let rolesSelected = document.getElementById(rolesInputName).selectedOptions;
     console.log(rolesSelected)
     for (let i = 0; i < rolesSelected.length; i++) {
         let role = {
-            id: document.getElementById('newUserRoles').selectedOptions[i].value,
-            name: document.getElementById('newUserRoles').selectedOptions[i].text
+            id: document.getElementById(rolesInputName).selectedOptions[i].value,
+            name: document.getElementById(rolesInputName).selectedOptions[i].text
         }
         roles.push(role)
 
     }
+    return roles;
+}
+//Добавление нового юзера
+
+async function addNewUser() {
+
+    let roles = await parsedRolesFromInput('newUserRoles');
 
     let user = {
         name: document.getElementById('newUserInputName').value,
@@ -175,7 +238,6 @@ async function addNewUser() {
         password: document.getElementById('newUserInputPassword').value,
         roles: roles
     };
-
 
     let response = await fetchService.addNewUser(user);
 
@@ -189,8 +251,6 @@ async function addNewUser() {
     } else {
         console.log(response)
     }
-
-
 }
 
 //Обработка нажатия на кнопку сохранения юзера
@@ -203,24 +263,16 @@ saveNewUserForm.addEventListener('submit', async (e) => {
 
 //Изменение юзера
 async function editUser(modal, id) {
+
+    let editButton = '';
+
     await fetchService.getUserById(id)
         .then(res => res.json())
         .then(user => {
-            modalId.setAttribute('value', user.id);
-            modalName.setAttribute('value', user.name);
-            modalLastName.setAttribute('value', user.lastName);
-            modalAge.setAttribute('value', user.age);
-            modalEmail.setAttribute('value', user.email);
-            modalPassword.setAttribute('value', user.password);
-            getRolesForForm('modalForm');
-
-            let buttons = `<button  class="btn btn-outline-success" id="editButton" data-bs-dismiss="modal">Edit</button>
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`;
-            modal.querySelector('.modal-footer').innerHTML = buttons;
-
+            fillModalForm(user, 'edit');
         })
 
-     document.getElementById("editButton").addEventListener('click', async (e) => {
+     document.getElementById('editButton').addEventListener('click', async (e) => {
          e.preventDefault();
          let id = document.getElementById('modalId').value.trim();
          let name = document.getElementById('modalName').value.trim();
@@ -229,13 +281,7 @@ async function editUser(modal, id) {
          let password = document.getElementById('modalPassword').value.trim();
          let age = document.getElementById('modalAge').value.trim();
 
-
-         let roles = {
-             id: document.getElementById('modalRoles').selectedOptions[0].value,
-             name: document.getElementById('modalRoles').selectedOptions[0].text
-         }
-
-         console.log("проверить роли" + roles);
+         let roles = await parsedRolesFromInput('modalRoles');
 
          let userUpdated = {
              id: id,
@@ -244,96 +290,44 @@ async function editUser(modal, id) {
              email: email,
              password: password,
              age: age,
-             roles: [roles]
+             roles: roles
          }
-
-
-         console.log(userUpdated)
-         console.log(userUpdated.roles)
 
          const response = await fetchService.updateUser(userUpdated, id);
 
          if (response.ok) {
                      await getTableWithAllUsers();
                      modal.classList.remove('show');
+                     document.getElementById('editButton').remove();
 
                  } else {
-                     let body = await response.json();
-                     let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
-                                     ${body.info}
-                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                         <span aria-hidden="true">&times;</span>
-                                     </button>
-                                 </div>`;
-                     modal.querySelector('.modal-body').innerHTML = alert;
-                 }
+             console.log('error in edit method')
 
+                 }
      })
 
 
 
 }
 
+//Удаление юзера
 async function deleteUser(modal, id) {
+
     await fetchService.getUserById(id)
         .then(res => res.json())
         .then(user => {
-            let bodyForm = `
-           <form>
-           <label class="form-label fw-bold">ID</label>
-                    <input type="number" class="form-control form-control-sm-6 disabled" name="name"
-                           style="background-color: lightgray" value="${user.id}" id="modalId"/>
-            <label class="form-label fw-bold">First name</label>
-                    <input type="text" class="form-control form-control-sm-6" name="name"
-                           style="background-color: lightgray" value="${user.name}" id="modalName"/>
-                    <label class="form-label fw-bold">Last name</label>
-                    <input type="text" class="form-control form-control-sm-6" name="lastName" 
-                    value="${user.lastName}" id="modalLastName"/>
-
-                    <label class="form-label fw-bold">Age</label>
-                    <input type="number" class="form-control form-control-sm-6" name="age" 
-                    value="${user.age}" id="modalAge"/>
-
-                    <label class="form-label fw-bold">E-mail</label>
-                    <input type="email" class="form-control form-control-sm-6" name="email" 
-                    value="${user.email}" id="modalEmail"/>
-
-                    <label class="form-label fw-bold">Password</label>
-                    <input type="password" class="form-control form-control-sm-6"
-                           name="password" value="${user.password}" id="modalPassword"/>
-
-                    <label class="form-label fw-bold">Roles</label>
-                    <div>
-                    <select className="form-control" name="roles" multiple size=${user.roles.length} id="modalRoles">
-                    <div>
-        `;
-
-            user.roles.forEach(role => {
-                bodyForm += `<option>${role.name}</option>`
-                   
-            });
-
-            bodyForm += `</div>
-                </select>
-                </div>
-                </form>`;
-
-            document.getElementById('modalFormBody').innerHTML = bodyForm;
-            let buttons = `<button  class="btn btn-danger" id="deleteButton" data-bs-dismiss="modal">Delete</button>
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`;
-            modal.querySelector('.modal-footer').innerHTML = buttons;
-
+            fillModalForm(user, 'delete');
         })
 
+
     document.getElementById('deleteButton').addEventListener('click', async(e) => {
+        e.preventDefault();
         console.log(e.target)
         const response = await fetchService.deleteUser(id);
         if (response.ok) {
-            getTableWithAllUsers();
+            await getTableWithAllUsers();
             modal.classList.remove('show');
-
-            //modal.hide();
-            //modal.setAttribute('data-bs-backdrop', 'false');
+            document.getElementById('deleteButton').remove();
 
         } else {
             console.log(response);

@@ -37,10 +37,10 @@ public class DBInit {
 
         // password = pass
 
-        user1.addRoleToUser(role1);
-        user2.addRoleToUser(role2);
-        user3.addRoleToUser(role1);
-        user3.addRoleToUser(role2);
+        user1.getRoles().add(role1);
+        user2.getRoles().add(role2);
+        user3.getRoles().add(role1);
+        user3.getRoles().add(role2);
 
         userService.save(user1);
         userService.save(user2);
