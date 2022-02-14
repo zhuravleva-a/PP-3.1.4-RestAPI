@@ -17,19 +17,20 @@
 
 
 <!-- Создание контейнера -->
-<div class="container-fluid">
+<div class="container-fluid" style="height: 1200px">
 
     <!-- HEADER -->
 
     <div class="row" style="background-color: #343a40">
         <nav class="navbar navbar-expand-lg navbar-fixed-top navbar-light"
              style="background-color: #343a40">
-            <div class="container-fluid">
+            <div class="container-fluid ms-0 px-0">
                 <ul class="navbar-nav mr-auto">
                     <a class="navbar-brand text-white fw-bold" th:text="${currentUser.email}">VALUE</a>
                     <a class="navbar-brand fw-normal text-white"> with roles: </a>
-                    <a class="navbar-brand fw-normal text-white" th:text="${currentUserRoles}"></a>
-
+                    <a th:each="role: ${currentUserRoles}" style="height: 40px">
+                        <a class="navbar-brand fw-normal text-white" style="height: 40px" th:text="${role.name}"></a>
+                    </a>
                 </ul>
                 <!--Кнопка logout-->
                 <form th:method="POST" th:action="@{/logout}">
@@ -42,11 +43,11 @@
 
 
     <!-- Разметка страницы на левую панель + основной блок -->
-    <div class="row">
+    <div class="row" style="height: 1200px">
 
         <!-- Боковая панель -->
 
-        <div class="col-md-2 bg-white" style="background-color: #ffffff">
+        <div class="col-md-2 ms-0 px-0 bg-white" style="background-color: #ffffff">
             <br/>
             <div class="nav nav-pills flex-column mx-auto">
                 <a sec:authorize="hasAuthority('ADMIN')" class="nav-link active" href="#AdminPage" data-bs-toggle="tab">Admin</a>
@@ -56,7 +57,7 @@
         </div>
 
         <!-- Центральный блок -->
-        <div class="col-md-10 bg-light mb-auto" style="background-color: #f8f9fa">
+        <div class="col-md-10 bg-light mb-auto" style="background-color: #f8f9fa; height: 1200px">
             <br/>
             <div class="tab-content">
                 <!-- Вкладка Users table -->

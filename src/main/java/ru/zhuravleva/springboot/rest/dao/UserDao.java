@@ -15,6 +15,4 @@ public interface UserDao {
 
     User getUserByUsername(String username);
 
-    void addRoleToUser(User user, Role role);
-
 }

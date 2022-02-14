@@ -2,10 +2,8 @@ package ru.zhuravleva.springboot.rest.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.zhuravleva.springboot.rest.dao.UserDao;
-import ru.zhuravleva.springboot.rest.model.Role;
 import ru.zhuravleva.springboot.rest.model.User;
 
 import javax.transaction.Transactional;
@@ -50,11 +48,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         userDao.delete(id);
-    }
-
-    @Override
-    public void addRoleToUser(User user, Role role) {
-        userDao.addRoleToUser(user, role);
     }
 
     @Override

@@ -50,12 +50,4 @@ public class UserDaoHiberImpl implements UserDao {
                 .getSingleResult();
     }
 
-    @Override
-    public void addRoleToUser(User user, Role role) {
-
-        em.createQuery("insert into User user = ?1 (roles) select role from Role role where role = ?2")
-                .setParameter(1, user)
-                .setParameter(2, role)
-                .executeUpdate();
-    }
 }

@@ -1,7 +1,6 @@
 // DOM elements
 let modal = document.getElementById('modalWindow');
 let allUsersTable = document.getElementById('allUsersTable');
-//let newUsersTab = document.getElementById('NewUserTab');
 let saveNewUserForm = document.querySelector('.form');
 
 let modalId = document.getElementById('modalId');
@@ -250,7 +249,7 @@ async function parsedRolesFromInput(rolesInputName) {
 }
 
 //Добавление нового юзера
-async function addNewUser() {
+async function addNewUserFormHandler() {
 
     let roles = await parsedRolesFromInput('newUserRoles');
 
@@ -287,7 +286,7 @@ async function addNewUser() {
 saveNewUserForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    await addNewUser();
+    await addNewUserFormHandler();
 });
 
 //Изменение юзера
