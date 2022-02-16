@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
+
 @SpringBootApplication
 public class SpringbootRestApplication {
 

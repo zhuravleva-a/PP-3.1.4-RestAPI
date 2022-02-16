@@ -7,6 +7,7 @@ import ru.zhuravleva.springboot.rest.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoHiberImpl implements UserDao {
@@ -15,9 +16,8 @@ public class UserDaoHiberImpl implements UserDao {
     private EntityManager em;
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
-        return em.createQuery("from User").getResultList();
+        return em.createQuery("from User", User.class).getResultList();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class UserDaoHiberImpl implements UserDao {
     @Override
     public User getUserByUsername(String username) {
 
-        return (User) em.createQuery("from User user where user.email = ?1")
+        return (User) em.createQuery("from User user inner join fetch user.roles where user.email = ?1")
                 .setParameter(1, username)
                 .getSingleResult();
     }

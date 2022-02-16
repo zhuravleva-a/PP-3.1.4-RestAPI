@@ -17,7 +17,6 @@ const fetchService = {
     head: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-        //'Referer': null
     },
     getAllUsers: async () => await fetch('http://localhost:8080/api/users'),
     getUserById: async (id) => await fetch(`http://localhost:8080/api/users/${id}`),

@@ -55,6 +55,7 @@ public class AdminRestController {
 
     }
 
+
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable("id") int id) {
 
@@ -63,7 +64,7 @@ public class AdminRestController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
 
         if (userService.getUserById(id) == null) {
             throw new NoSuchUserException("User not found");

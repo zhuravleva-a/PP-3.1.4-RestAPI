@@ -52,7 +52,7 @@
             <div class="nav nav-pills flex-column mx-auto">
                 <a sec:authorize="hasAuthority('ADMIN')" class="nav-link active" href="#AdminPage" data-bs-toggle="tab">Admin</a>
                 <a sec:authorize="hasAuthority('ADMIN')" class="nav-link" href="#UserPage" data-bs-toggle="tab">User</a>
-                <a sec:authorize="hasAuthority('USER')" class="nav-link active" href="#UserPage" data-bs-toggle="tab">User</a>
+                <a sec:authorize="!hasAuthority('ADMIN')" class="nav-link active" href="#UserPage" data-bs-toggle="tab">User</a>
             </div>
         </div>
 
@@ -192,7 +192,7 @@
 
                 <!--Вкладка Current user для USER -->
 
-                <div sec:authorize="hasAuthority('USER')" class="tab-pane fade show active" id="UserPage">
+                <div sec:authorize="!hasAuthority('ADMIN')" class="tab-pane fade show active" id="UserPage">
                     <div class="card">
                         <h3 class="h3">User information-page</h3>
                         <h5 class="card-header">About user</h5>
@@ -222,15 +222,8 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
-
-
         </div>
-
-
     </div>
 </div>
 
