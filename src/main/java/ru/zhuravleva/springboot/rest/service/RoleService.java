@@ -14,4 +14,6 @@ public interface RoleService {
     Role getRoleByName(String roleName);
     String getCrypt(String password);
 
+    //new functionality
+
 }
